@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>My cars · Crestline Motors</title>
+  <meta name="robots" content="noindex" />
+  <meta name="theme-color" content="#0b0c0e" />
+  <link rel="icon" href="images/icon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/admin.css" />
+  <script type="module" src="js/admin.js"></script>
+</head>
+<body class="admin">
+  <p class="sample-strip" id="previewStrip" hidden>
+    Preview: changes are saved <b>in this browser only</b>. <button type="button" id="reset">Reset</button>
+  </p>
+
+  <header class="hd scrolled">
+    <div class="wrap hd-in">
+      <a class="brand" href="index.html">
+        <span class="brand-mark" aria-hidden="true">C</span>
+        <span class="brand-word">Crestline<small>Motors</small></span>
+      </a>
+      <a class="view-site" href="index.html" target="_blank" rel="noopener">View site ↗</a>
+      <button class="link-btn" type="button" id="signOut" hidden>Sign out</button>
+    </div>
+  </header>
+
+  <!-- Sign in (live mode only) -->
+  <section class="wrap signin" id="signin" hidden>
+    <h1>Welcome back</h1>
+    <form id="signinForm" class="box" novalidate>
+      <label class="fld"><span>Email</span><input type="email" id="email" autocomplete="username" required /></label>
+      <label class="fld"><span>Password</span><input type="password" id="password" autocomplete="current-password" required /></label>
+      <p class="err" id="signinErr" role="alert"></p>
+      <button class="btn btn-red" type="submit">Sign in</button>
+    </form>
+  </section>
+  <section class="wrap signin" id="notAdmin" hidden>
+    <h1>No access</h1>
+    <p class="muted">This login isn't set up to manage the cars. Ask Salim to add it.</p>
+  </section>
+
+  <main class="wrap owner" id="owner" hidden>
+    <div class="owner-head">
+      <div>
+        <h1>My cars</h1>
+        <p class="muted" id="stats"></p>
+      </div>
+      <button class="btn btn-red" type="button" id="addBtn">+ Add a car</button>
+    </div>
+    <div class="owner-tools">
+      <label class="search"><svg class="ic" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></g></svg>
+        <input id="oq" type="search" placeholder="Search your cars" aria-label="Search your cars" autocomplete="off" />
+      </label>
+      <div class="seg" id="ofilter" role="radiogroup" aria-label="Show"></div>
+    </div>
+    <ul class="clist" id="clist" aria-live="polite"><li class="muted">Loading…</li></ul>
+  </main>
+
+  <!-- Add / edit -->
+  <dialog class="editor" id="editor" aria-labelledby="edTitle">
+    <form id="edForm" novalidate>
+      <div class="ed-head">
+        <h2 id="edTitle">Add a car</h2>
+        <button class="round" type="button" id="edClose" aria-label="Close without saving">
+          <svg class="ic" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M6 6l12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+      <div class="ed-body">
+        <section class="ed-sec">
+          <h3>Photos</h3>
+          <div class="photo-grid" id="edPhotos"></div>
+          <label class="photo-btn" id="photoBtn">
+            <input type="file" id="edFile" accept="image/*" multiple />
+            <span id="photoLabel">📷 Add photos</span>
+          </label>
+          <p class="muted small" id="photoMsg">Front three-quarter view first (it's the cover), then sides, back, interior, dashboard and engine.</p>
+        </section>
+
+        <section class="ed-sec">
+          <h3>The car</h3>
+          <div class="two">
+            <label class="fld"><span>Make</span><select id="edMake"></select></label>
+            <label class="fld"><span>Year</span><input id="edYear" type="number" inputmode="numeric" min="1980" placeholder="e.g. 2019" /></label>
+          </div>
+          <label class="fld"><span>Model and trim</span><input id="edModel" maxlength="60" placeholder="e.g. Land Cruiser Prado VX" /></label>
+          <div class="two">
+            <label class="fld"><span>Price (GH₵)</span><input id="edPrice" type="number" inputmode="numeric" min="1" step="1000" placeholder="e.g. 450000" /></label>
+            <label class="fld"><span>Mileage (km)</span><input id="edKm" type="number" inputmode="numeric" min="0" step="1000" placeholder="0 if brand new" /></label>
+          </div>
+          <div class="fld"><span>Condition</span>
+            <div class="seg seg-sm" id="edCond" role="radiogroup" aria-label="Condition"></div>
+          </div>
+        </section>
+
+        <section class="ed-sec">
+          <h3>Details</h3>
+          <div class="two">
+            <label class="fld"><span>Body</span><select id="edBody"></select></label>
+            <label class="fld"><span>Transmission</span><select id="edTrans"></select></label>
+            <label class="fld"><span>Fuel</span><select id="edFuel"></select></label>
+            <label class="fld"><span>Drive</span><select id="edDrive"></select></label>
+            <label class="fld"><span>Engine</span><input id="edEngine" maxlength="30" placeholder="e.g. 2.8L Diesel" /></label>
+            <label class="fld"><span>Colour</span><input id="edColour" maxlength="30" placeholder="e.g. Pearl White" /></label>
+          </div>
+        </section>
+
+        <section class="ed-sec">
+          <h3>Features</h3>
+          <div class="feat-pick" id="edFeat"></div>
+          <div class="add-feat">
+            <input id="edFeatInput" maxlength="40" placeholder="Add another feature" aria-label="Add another feature" />
+            <button class="btn btn-line" type="button" id="addFeat">Add</button>
+          </div>
+        </section>
+
+        <label class="fld"><span>Description (optional)</span><textarea id="edDesc" rows="4" maxlength="1000" placeholder="Condition, history, service records, anything a buyer should know"></textarea></label>
+
+        <section class="ed-sec">
+          <h3>On the site</h3>
+          <div class="fld"><span>Status</span>
+            <div class="seg seg-sm" id="edStatus" role="radiogroup" aria-label="Status"></div>
+          </div>
+          <label class="switch"><input type="checkbox" id="edFeatured" /><span></span> Featured (shown at the top)</label>
+          <label class="switch"><input type="checkbox" id="edHidden" /><span></span> Hide from the site</label>
+        </section>
+        <p class="err" id="edErr" role="alert"></p>
+      </div>
+      <div class="ed-foot">
+        <button class="link-btn danger" type="button" id="edDelete" hidden>Delete</button>
+        <button class="btn btn-red grow" type="submit" id="edSave">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
