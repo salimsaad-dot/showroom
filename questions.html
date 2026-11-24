@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Your website details</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#0b0c0e" />
+  <link rel="icon" href="images/icon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      color-scheme: dark;
+      --ink: #0b0c0e; --ink-2: #121317; --ink-3: #1a1c21; --ink-4: #24272d;
+      --line: rgba(255,255,255,.09); --line-2: rgba(255,255,255,.16);
+      --text: #eceae4; --muted: #9b9da4; --red: #e0352b; --red-hi: #f04a3f; --wa: #25d366;
+      --serif: "Instrument Serif", "Times New Roman", serif;
+      --sans: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
+      --r: 14px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-text-size-adjust: 100%; }
+    body { background: var(--ink); color: var(--text); font: 400 16px/1.6 var(--sans); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    button, input, select, textarea { font: inherit; color: inherit; }
+    button { cursor: pointer; }
+    [hidden] { display: none !important; }
+    :focus-visible { outline: 2px solid var(--red-hi); outline-offset: 3px; border-radius: 6px; }
+    .wrap { width: min(720px, 100% - 32px); margin-inline: auto; }
+
+    .top { position: sticky; top: 0; z-index: 10; background: var(--ink); border-bottom: 1px solid var(--line); }
+    .top-in { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 60px; }
+    .top b { font-weight: 600; font-size: .95rem; }
+    .progress { font-size: .82rem; color: var(--muted); white-space: nowrap; }
+    .bar { height: 2px; background: var(--ink-3); }
+    .bar i { display: block; height: 100%; width: 0; background: var(--red); transition: width .3s ease; }
+
+    .intro { padding: 2.6rem 0 1.6rem; }
+    .eyebrow { font-size: .74rem; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); margin-bottom: .8rem; }
+    .eyebrow::before { content: ""; display: inline-block; width: 18px; height: 1px; background: var(--red); vertical-align: middle; margin-right: .6rem; translate: 0 -2px; }
+    h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(2.5rem, 8vw, 3.6rem); line-height: 1.02; letter-spacing: -.01em; }
+    h1 em { font-style: italic; }
+    .intro p { color: var(--muted); margin-top: 1rem; max-width: 34rem; }
+    .intro p a { color: var(--text); text-decoration: underline; text-decoration-color: var(--red); text-underline-offset: 3px; }
+
+    .card { background: var(--ink-2); border: 1px solid var(--line); border-radius: var(--r); padding: 1.5rem 1.3rem 1.6rem; margin-bottom: 1rem; }
+    .card h2 { font-family: var(--serif); font-weight: 400; font-size: 1.9rem; line-height: 1.1; margin-bottom: .3rem; }
+    .card > .hint { color: var(--muted); font-size: .9rem; margin-bottom: .4rem; }
+    .q { padding-top: 1.3rem; }
+    .q + .q { border-top: 1px solid var(--line); margin-top: 1.3rem; }
+    .q > label, .q > .label { display: block; font-weight: 600; margin-bottom: .2rem; }
+    .q .n { color: var(--red-hi); font-variant-numeric: tabular-nums; margin-right: .35rem; }
+    .q .req { color: var(--red-hi); font-weight: 500; font-size: .85rem; margin-left: .3rem; }
+    .q .hint { color: var(--muted); font-size: .86rem; margin-bottom: .6rem; }
+    .field { display: block; width: 100%; min-height: 50px; padding: .7rem .9rem; border: 1px solid var(--line-2); border-radius: 10px; background: var(--ink); transition: border-color .2s; }
+    textarea.field { min-height: 96px; resize: vertical; }
+    .field:focus { outline: none; border-color: var(--red); }
+    .field::placeholder { color: #6b6d73; }
+    .field.bad { border-color: var(--red-hi); }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: .7rem; margin-top: .4rem; }
+    .grid label { display: block; font-size: .82rem; color: var(--muted); margin-bottom: .25rem; }
+    .row-hrs { display: grid; grid-template-columns: 6.5rem minmax(0, 1fr) auto; align-items: center; gap: .7rem; margin-top: .6rem; }
+    .row-hrs span { font-size: .92rem; }
+    .row-hrs .field:disabled { opacity: .35; }
+
+    .opts { display: grid; gap: .5rem; margin-top: .5rem; }
+    .opt { display: flex; align-items: center; gap: .75rem; min-height: 50px; padding: .6rem .9rem; border: 1px solid var(--line-2); border-radius: 10px; cursor: pointer; transition: border-color .2s, background .2s; }
+    .opt:has(input:checked) { border-color: var(--red); background: rgba(224, 53, 43, .08); }
+    .opt input { width: 20px; height: 20px; accent-color: var(--red); flex: none; }
+    .tick { display: inline-flex; align-items: center; gap: .5rem; font-size: .86rem; color: var(--muted); cursor: pointer; white-space: nowrap; }
+    .tick input { width: 18px; height: 18px; accent-color: var(--red); }
+    .more { margin-top: .6rem; }
+
+    .send { padding: 1.2rem 0 3rem; }
+    .err { color: var(--red-hi); font-size: .92rem; margin-bottom: .8rem; }
+    .err:empty { display: none; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: .55rem; min-height: 54px; padding: 0 1.5rem; border-radius: 999px; border: 1px solid transparent; font-weight: 600; font-size: 1rem; width: 100%; transition: background .2s, scale .12s; }
+    .btn:active { scale: .98; }
+    .btn-wa { background: var(--wa); color: #06210f; }
+    .btn-line { border-color: var(--line-2); background: transparent; margin-top: .6rem; }
+    @media (hover: hover) { .btn-line:hover { border-color: var(--text); } }
+    .small { color: var(--muted); font-size: .84rem; text-align: center; margin-top: .9rem; }
+    .done { text-align: center; padding: 3.5rem 0 4rem; }
+    .done h1 { margin-bottom: .8rem; }
+    .done p { color: var(--muted); max-width: 30rem; margin: 0 auto 1.4rem; }
+    .done .btn { max-width: 22rem; }
+    .ic { width: 1.2em; height: 1.2em; flex: none; }
+    @media (max-width: 480px) {
+      .card { padding: 1.3rem 1rem 1.4rem; }
+      .row-hrs { grid-template-columns: 5.2rem minmax(0, 1fr) auto; gap: .5rem; }
+    }
+  </style>
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-wa" viewBox="0 0 24 24"><path fill="currentColor" d="M12.04 2a9.9 9.9 0 0 0-8.5 15l-1.4 5 5.1-1.34A9.9 9.9 0 1 0 12.04 2Zm0 18.1a8.2 8.2 0 0 1-4.18-1.15l-.3-.18-3.03.8.81-2.96-.2-.3a8.2 8.2 0 1 1 6.9 3.79Zm4.5-6.14c-.25-.12-1.46-.72-1.69-.8-.23-.08-.39-.12-.55.12-.17.25-.64.8-.78.97-.14.16-.29.18-.53.06a6.7 6.7 0 0 1-3.32-2.9c-.25-.43.25-.4.72-1.33.08-.16.04-.3-.02-.43-.06-.12-.55-1.33-.76-1.82-.2-.48-.4-.41-.55-.42h-.47a.9.9 0 0 0-.65.3 2.74 2.74 0 0 0-.86 2.04 4.76 4.76 0 0 0 1 2.53 10.9 10.9 0 0 0 4.17 3.68c1.55.67 2.16.73 2.94.61.47-.07 1.46-.6 1.66-1.17.2-.58.2-1.07.15-1.17-.06-.1-.22-.16-.47-.28Z"/></symbol>
+  </svg>
+
+  <div class="top">
+    <div class="wrap top-in">
+      <b>Your website details</b>
+      <span class="progress" id="progress">0 of 13 answered</span>
+    </div>
+    <div class="bar"><i id="barFill"></i></div>
+  </div>
+
+  <main class="wrap" id="formWrap">
+    <section class="intro">
+      <p class="eyebrow">Setting up your site</p>
+      <h1>A few details, <em>then you're live.</em></h1>
+      <p>Answer what you can and skip the rest. We can fill in the gaps later. Your answers are saved on this phone as you type, so you can come back any time. When you're done, press <b>Send on WhatsApp</b>.</p>
+      <p>Your preview: <a href="./" target="_blank" rel="noopener">see the sample site</a></p>
+    </section>
+
+    <form id="qForm" novalidate>
+      <section class="card">
+        <h2>About the business</h2>
+        <div class="q">
+          <label for="name"><span class="n">1.</span>Business name<span class="req">required</span></label>
+          <p class="hint">Exactly as you want it on the site.</p>
+          <input class="field" id="name" name="name" autocomplete="organization" placeholder="e.g. Crestline Motors" />
+        </div>
+        <div class="q">
+          <label for="location"><span class="n">2.</span>Location and a landmark people know</label>
+          <input class="field" id="location" name="location" placeholder="e.g. East Legon, near A&amp;C Mall" />
+        </div>
+        <div class="q">
+          <label for="maps"><span class="n">3.</span>Google Maps pin of the yard</label>
+          <p class="hint">In Google Maps, press and hold on your yard, tap <b>Share</b>, then <b>Copy link</b> and paste it here.</p>
+          <input class="field" id="maps" name="maps" inputmode="url" placeholder="https://maps.app.goo.gl/…" />
+        </div>
+        <div class="q">
+          <span class="label"><span class="n">4.</span>Opening hours</span>
+          <div class="row-hrs"><span>Mon – Fri</span><input class="field" id="hWeek" name="hWeek" aria-label="Monday to Friday hours" placeholder="e.g. 8 am – 6 pm" /><span></span></div>
+          <div class="row-hrs"><span>Saturday</span><input class="field" id="hSat" name="hSat" aria-label="Saturday hours" placeholder="e.g. 9 am – 4 pm" /><label class="tick"><input type="checkbox" id="satClosed" name="satClosed" data-for="hSat" />Closed</label></div>
+          <div class="row-hrs"><span>Sunday</span><input class="field" id="hSun" name="hSun" aria-label="Sunday hours" placeholder="e.g. 1 pm – 5 pm" /><label class="tick"><input type="checkbox" id="sunClosed" name="sunClosed" data-for="hSun" />Closed</label></div>
+        </div>
+        <div class="q">
+          <span class="label"><span class="n">5.</span>Do you have a logo?</span>
+          <div class="opts" role="radiogroup" aria-label="Logo">
+            <label class="opt"><input type="radio" name="logo" value="Yes, I'll send it on WhatsApp" />Yes, I'll send it on WhatsApp</label>
+            <label class="opt"><input type="radio" name="logo" value="Not yet" />Not yet</label>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Contacts</h2>
+        <div class="q">
+          <label for="wa"><span class="n">6.</span>WhatsApp number for enquiries and test drives</label>
+          <p class="hint">Buyers' messages from the site will go to this number.</p>
+          <input class="field" id="wa" name="wa" type="tel" inputmode="tel" autocomplete="tel" placeholder="e.g. 024 123 4567" />
+        </div>
+        <div class="q">
+          <span class="label"><span class="n">7.</span>Social media</span>
+          <p class="hint">Fill in any you use: a link or your @name.</p>
+          <div class="grid">
+            <div><label for="ig">Instagram</label><input class="field" id="ig" name="ig" placeholder="@yourname" /></div>
+            <div><label for="tt">TikTok</label><input class="field" id="tt" name="tt" placeholder="@yourname" /></div>
+            <div><label for="fb">Facebook</label><input class="field" id="fb" name="fb" placeholder="Page name or link" /></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Payment</h2>
+        <div class="q">
+          <span class="label"><span class="n">8.</span>Instalments</span>
+          <p class="hint">The site works out a monthly figure for buyers from these two numbers.</p>
+          <div class="grid">
+            <div><label for="deposit">Minimum deposit (%)</label><input class="field" id="deposit" name="deposit" type="number" inputmode="numeric" min="0" max="100" placeholder="e.g. 30" /></div>
+            <div><label for="months">Longest time to pay</label>
+              <select class="field" id="months" name="months">
+                <option value="">Choose…</option>
+                <option>3 months</option><option>6 months</option><option>12 months</option><option>18 months</option><option>24 months</option><option>36 months</option><option>Other (I'll explain)</option>
+              </select></div>
+          </div>
+          <label class="tick more"><input type="checkbox" id="noInst" name="noInst" />We don't offer instalments</label>
+        </div>
+        <div class="q">
+          <label for="banks"><span class="n">9.</span>Hire purchase</label>
+          <p class="hint">Which banks or finance companies do you work with?</p>
+          <input class="field" id="banks" name="banks" placeholder="e.g. the banks you work with" />
+          <p class="hint more">What should buyers bring? Tick all that apply.</p>
+          <div class="opts">
+            <label class="opt"><input type="checkbox" name="docs" value="Ghana Card" />Ghana Card</label>
+            <label class="opt"><input type="checkbox" name="docs" value="Payslips" />Payslips</label>
+            <label class="opt"><input type="checkbox" name="docs" value="Bank statements" />Bank statements</label>
+            <label class="opt"><input type="checkbox" name="docs" value="Proof of address" />Proof of address</label>
+            <label class="opt"><input type="checkbox" name="docs" value="A guarantor" />A guarantor</label>
+          </div>
+          <input class="field more" id="docsOther" name="docsOther" aria-label="Other documents" placeholder="Anything else? Type it here" />
+          <label class="tick more"><input type="checkbox" id="noHp" name="noHp" />We don't offer hire purchase</label>
+        </div>
+        <div class="q">
+          <span class="label"><span class="n">10.</span>How can buyers pay?</span>
+          <div class="opts">
+            <label class="opt"><input type="checkbox" name="pay" value="Bank transfer" />Bank transfer</label>
+            <label class="opt"><input type="checkbox" name="pay" value="Mobile Money" />Mobile Money</label>
+            <label class="opt"><input type="checkbox" name="pay" value="Cash at the yard" />Cash at the yard</label>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Your cars</h2>
+        <p class="hint">You'll add cars yourself from your phone, so there's no need to send them all.</p>
+        <div class="q">
+          <label for="email"><span class="n">11.</span>Email address for your login</label>
+          <p class="hint">You'll use it to sign in and add, edit or mark cars as sold.</p>
+          <input class="field" id="email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="you@example.com" />
+        </div>
+        <div class="q">
+          <span class="label"><span class="n">12.</span>A first car to add as an example?</span>
+          <p class="hint">Photos plus the year, price and mileage.</p>
+          <div class="opts" role="radiogroup" aria-label="Example car">
+            <label class="opt"><input type="radio" name="example" value="Yes, I'll send one on WhatsApp" />Yes, I'll send one on WhatsApp</label>
+            <label class="opt"><input type="radio" name="example" value="No, I'll add them myself" />No, I'll add them myself</label>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Optional</h2>
+        <div class="q">
+          <span class="label"><span class="n">13.</span>Do you want your own web address?</span>
+          <p class="hint">Like yourname.com instead of the current link.</p>
+          <div class="opts" role="radiogroup" aria-label="Own web address">
+            <label class="opt"><input type="radio" name="domain" value="Yes" />Yes</label>
+            <label class="opt"><input type="radio" name="domain" value="No" />No</label>
+            <label class="opt"><input type="radio" name="domain" value="Not sure, let's talk" />Not sure, let's talk</label>
+          </div>
+          <input class="field more" id="domainIdea" name="domainIdea" aria-label="Web address idea" placeholder="Any name in mind? e.g. crestlinemotors.com" hidden />
+        </div>
+        <div class="q">
+          <label for="notes">Anything else you'd like on the site?</label>
+          <textarea class="field" id="notes" name="notes" placeholder="Optional"></textarea>
+        </div>
+      </section>
+
+      <div class="send">
+        <p class="err" id="err" role="alert"></p>
+        <button class="btn btn-wa" type="submit" id="sendBtn"><svg class="ic" aria-hidden="true"><use href="#i-wa"/></svg>Send on WhatsApp</button>
+        <button class="btn btn-line" type="button" id="copyBtn">Copy my answers instead</button>
+        <p class="small">Your answers open in WhatsApp as one message. Check it, then press send.</p>
+      </div>
+    </form>
+  </main>
+
+  <section class="wrap done" id="done" hidden>
+    <p class="eyebrow">Thank you</p>
+    <h1>Your answers are <em>ready.</em></h1>
+    <p>Press send in WhatsApp if you haven't yet. If you said you'll send a logo or a car, you can attach them in the same chat.</p>
+    <button class="btn btn-wa" type="button" id="againBtn"><svg class="ic" aria-hidden="true"><use href="#i-wa"/></svg>Open WhatsApp again</button>
+    <button class="btn btn-line" type="button" id="editBtn" style="max-width:22rem">Change an answer</button>
+  </section>
+
+  <script>
+    // Answers go to Salim's WhatsApp as one message. Nothing is stored online.
+    const SEND_TO = "233577428684";
+    const KEY = "showroom-questions-v1";
+    const $ = (id) => document.getElementById(id);
+    const form = $("qForm");
+
+    const store = {
+      get() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch { return {}; } },
+      set(v) { try { localStorage.setItem(KEY, JSON.stringify(v)); } catch {} },
+    };
+
+    const read = () => {
+      const fd = new FormData(form), o = {};
+      for (const [k, v] of fd.entries()) {
+        if (k === "docs" || k === "pay") (o[k] = o[k] || []).push(v);
+        else o[k] = typeof v === "string" ? v.trim() : v;
+      }
+      return o;
+    };
+
+    const restore = () => {
+      const o = store.get();
+      for (const el of form.elements) {
+        if (!el.name || !(el.name in o)) continue;
+        const v = o[el.name];
+        if (el.type === "checkbox") el.checked = Array.isArray(v) ? v.includes(el.value) : v === "on";
+        else if (el.type === "radio") el.checked = v === el.value;
+        else el.value = v;
+      }
+    };
+
+    // Which of the 13 questions have an answer
+    const answered = (o) => [
+      o.name, o.location, o.maps, o.hWeek || o.hSat || o.hSun || o.satClosed || o.sunClosed, o.logo,
+      o.wa, o.ig || o.tt || o.fb, o.deposit || o.months || o.noInst, o.banks || o.docs || o.docsOther || o.noHp, o.pay,
+      o.email, o.example, o.domain,
+    ].filter(Boolean).length;
+
+    const sync = () => {
+      document.querySelectorAll("[data-for]").forEach((cb) => { const f = $(cb.dataset.for); f.disabled = cb.checked; });
+      ["deposit", "months"].forEach((id) => { $(id).disabled = $("noInst").checked; });
+      $("banks").disabled = $("noHp").checked;
+      $("domainIdea").hidden = !form.querySelector('input[name="domain"][value="Yes"]').checked;
+      const o = read(), n = answered(o);
+      $("progress").textContent = `${n} of 13 answered`;
+      $("barFill").style.width = `${(n / 13) * 100}%`;
+      return o;
+    };
+
+    const line = (label, v) => `${label}: ${v ? v : "-"}`;
+    const hrs = (closed, v) => (closed ? "Closed" : v);
+    const message = (o) => {
+      const L = [];
+      L.push(`*Website details: ${o.name || "(no name yet)"}*`, "");
+      L.push("*About the business*");
+      L.push(line("1. Business name", o.name));
+      L.push(line("2. Location", o.location));
+      L.push(line("3. Google Maps", o.maps));
+      L.push("4. Hours:");
+      L.push(`   Mon–Fri: ${o.hWeek || "-"}`);
+      L.push(`   Saturday: ${hrs(o.satClosed, o.hSat) || "-"}`);
+      L.push(`   Sunday: ${hrs(o.sunClosed, o.hSun) || "-"}`);
+      L.push(line("5. Logo", o.logo), "");
+      L.push("*Contacts*");
+      L.push(line("6. WhatsApp", o.wa));
+      L.push("7. Socials:");
+      L.push(`   Instagram: ${o.ig || "-"}`);
+      L.push(`   TikTok: ${o.tt || "-"}`);
+      L.push(`   Facebook: ${o.fb || "-"}`, "");
+      L.push("*Payment*");
+      L.push(o.noInst ? "8. Instalments: not offered" : `8. Instalments: minimum deposit ${o.deposit ? o.deposit + "%" : "-"}, up to ${o.months || "-"}`);
+      if (o.noHp) L.push("9. Hire purchase: not offered");
+      else {
+        const docs = [...(o.docs || []), ...(o.docsOther ? [o.docsOther] : [])];
+        L.push(line("9. Hire purchase partners", o.banks));
+        L.push(line("   Buyers bring", docs.join(", ")));
+      }
+      L.push(line("10. Buyers can pay by", (o.pay || []).join(", ")), "");
+      L.push("*Cars*");
+      L.push(line("11. Login email", o.email));
+      L.push(line("12. Example car", o.example), "");
+      L.push("*Optional*");
+      L.push(line("13. Own web address", !o.domain ? "" : o.domain + (o.domain === "Yes" && o.domainIdea ? ` (${o.domainIdea})` : "") || ""));
+      if (o.notes) L.push("", "*Anything else*", o.notes);
+      return L.join("\n");
+    };
+
+    const openWa = () => window.open(`https://wa.me/${SEND_TO}?text=${encodeURIComponent(message(read()))}`, "_blank", "noopener");
+
+    restore();
+    sync();
+    form.addEventListener("input", () => { store.set(sync()); $("name").classList.remove("bad"); $("err").textContent = ""; });
+    form.addEventListener("change", () => store.set(sync()));
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const o = read();
+      if (!o.name) {
+        $("err").textContent = "Please add the business name first (question 1).";
+        $("name").classList.add("bad");
+        $("name").focus();
+        return;
+      }
+      openWa();
+      $("formWrap").hidden = true;
+      $("done").hidden = false;
+      scrollTo(0, 0);
+    });
+    $("againBtn").addEventListener("click", openWa);
+    $("editBtn").addEventListener("click", () => { $("done").hidden = true; $("formWrap").hidden = false; });
+    $("copyBtn").addEventListener("click", async () => {
+      const text = message(read());
+      try { await navigator.clipboard.writeText(text); $("copyBtn").textContent = "Copied. Paste it into WhatsApp"; }
+      catch { $("copyBtn").textContent = "Couldn't copy. Please use Send on WhatsApp"; }
+      setTimeout(() => { $("copyBtn").textContent = "Copy my answers instead"; }, 3000);
+    });
+  </script>
+</body>
+</html>
